@@ -1,1 +1,1 @@
-# qdjr-api
+# A example with Gin Framework
