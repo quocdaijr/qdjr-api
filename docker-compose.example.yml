@@ -1,0 +1,71 @@
+version: '3.8'
+services:
+  qdjr_api_nginx:
+    image: nginx:alpine
+    container_name: qdjr_api_nginx
+    volumes:
+      - '.:/var/www/html/qdjr-api'
+      - './docker/nginx/conf.d:/etc/nginx/conf.d'
+      - './docker/nginx/logs:/var/log/nginx'
+    ports:
+      - "8020:80"
+      - "8021:443"
+    dns:
+      - 8.8.8.8
+      - 4.4.4.4
+    depends_on:
+      - qdjr_api_go
+    networks:
+      - qdjr-api
+  qdjr_api_go:
+    build:
+      context: .
+      dockerfile: docker/go/Dockerfile
+    container_name: qdjr_api_go
+    working_dir: /var/www/html/qdjr-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - '.:/var/www/html/qdjr-api'
+    dns:
+      - 8.8.8.8
+      - 4.4.4.4
+    depends_on:
+      - qdjr_api_postgres
+      - qdjr_api_redis
+    networks:
+      - qdjr-api
+
+  qdjr_api_postgres:
+    image: postgres:16-alpine
+    container_name: qdjr_api_postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/postgres/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=12345@
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_DB=qdjr_db
+    dns:
+      - 8.8.8.8
+      - 4.4.4.4
+    networks:
+      - qdjr-api
+
+  qdjr_api_redis:
+    image: redis:latest
+    container_name: qdjr_api_redis
+    volumes:
+      - './docker/redis/data:/data'
+    ports:
+      - "6379:6379"
+    dns:
+      - 8.8.8.8
+      - 4.4.4.4
+    networks:
+      - qdjr-api
+
+networks:
+  qdjr-api:
+    driver: bridge
