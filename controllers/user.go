@@ -30,17 +30,6 @@ func (userController UserController) Search(c *gin.Context) {
 	)
 }
 
-func (userController UserController) Create(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	user := userService.Detail(id)
-	if user.Id == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"user": user})
-
-}
-
 func (userController UserController) Detail(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	user := userService.Detail(id)

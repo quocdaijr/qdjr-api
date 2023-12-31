@@ -17,6 +17,9 @@ func main() {
 	MainDbInitializer := new(initializers.DbInitializer)
 	MainDbInitializer.ConnectDataBase()
 
+	MainRedisInitializer := new(initializers.RedisInitializer)
+	MainRedisInitializer.ConnectRedis()
+
 	gin.SetMode(gin.DebugMode)
 
 	router := gin.Default() //new gin router initialization
@@ -33,6 +36,12 @@ func main() {
 	 */
 	userRoute := new(routes.UserRoute)
 	userRoute.Register(group)
+
+	/**
+	 * Article Routes
+	 */
+	articleRoute := new(routes.ArticleRoute)
+	articleRoute.Register(group)
 
 	err = router.Run(":8000")
 	if err != nil {

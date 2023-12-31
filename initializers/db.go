@@ -55,9 +55,11 @@ func (dbInitializer DbInitializer) ConnectDataBase() {
 }
 
 func (_ DbInitializer) autoMigrate() {
-	err := DB.AutoMigrate(&models.User{})
+	err := DB.AutoMigrate(&models.User{}, &models.Article{})
 	if err != nil {
 		fmt.Println("Cannot auto migrate database with err: ", err)
 		log.Fatal("Cannot auto migrate database with err: ", err)
+	} else {
+		fmt.Println("Migrate success")
 	}
 }
